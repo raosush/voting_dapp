@@ -12,3 +12,11 @@ class IsOtpVerified(permissions.BasePermission):
             return otp_is_verified(request)
         else:
             return True
+
+class IsOwner(permissions.BasePermission):
+    """
+    Users can only edit their profiles!
+    """
+    message = "You can edit only your profile!"    
+    def has_object_permission(self, request, view, obj):
+        return obj.user == request.user

@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.conf import settings
 
 # Create your models here.
 
@@ -75,3 +76,13 @@ class User(AbstractBaseUser):
 
     def to_payload(self):
         return { 'id': self.id, 'username': self.username, 'email': self.email }
+
+class Profile(models.Model):
+    name = models.CharField(verbose_name='name_of_the_user', max_length=128)
+    about_me = models.TextField(verbose_name='explain_about_yourself', max_length=65535)
+    experience = models.TextField(verbose_name='any_relevant_experience', max_length=65535)
+    social_profile = models.URLField(verbose_name='link_to_any_social_profile', null=True, blank=True, max_length=255)
+    user = models.OneToOneField(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+
+    def __str__(self) -> str:
+        return str(self.user) + "'s Profile" + " - " + str(self.pk)

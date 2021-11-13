@@ -3,7 +3,7 @@ from django.conf import settings
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, TokenRefreshSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
-from authentication.models import User
+from authentication.models import Profile, User
 from .utils import get_user_totp_device
 
 # User Serializer
@@ -66,3 +66,15 @@ class TOTPCustomTokenRefreshSerialzier(serializers.Serializer):
             data['refresh'] = str(refresh)
 
         return data
+
+class ProfileSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+    class Meta:
+        model = Profile
+        fields = ('name', 'about_me', 'experience', 'social_profile', 'user',)
+
+    def create(self, validated_data):
+        return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        return super().update(instance, validated_data)
