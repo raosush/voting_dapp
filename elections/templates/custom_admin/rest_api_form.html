@@ -1,0 +1,24 @@
+{% extends 'admin/base_site.html' %}
+{% block title %}
+Import via REST API
+{% endblock %}
+{% load i18n static %}
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+<a href="{% url 'admin:index' %}">{% translate 'Home' %}</a>
+&rsaquo; <a href="{% url 'admin:elections_election_changelist' %}">Elections</a>
+&rsaquo; <a href="{% url 'admin:elections_nomination_changelist' %}">Nominations</a>
+</div>
+{% endblock %}
+{% block content %}
+<div id="content-main">
+    <form action="." method="POST" enctype="multipart/form-data">
+    <div class="form-row">
+        {{ form.rest_url.label_tag }} {{ form.rest_url }}
+    </div>
+    {% csrf_token %}
+    <input type="submit" class="default" value="Submit">
+    </form>
+</div>
+<br />
+{% endblock %}

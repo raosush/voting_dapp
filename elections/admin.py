@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.urls import path
 from django.shortcuts import redirect, render
-from .forms import CsvImportForm
+from .forms import CsvImportForm, RESTApiImportForm
 from elections.models import Election, Nomination
 
 # Register your models here. 
@@ -16,6 +16,7 @@ class NominationAdmin(admin.ModelAdmin):
         my_urls = [
      
             path('import_csv/', self.import_csv),
+            path('import_from_url/', self.import_from_rest_api)
         ]
         return my_urls + urls
          
@@ -35,6 +36,22 @@ class NominationAdmin(admin.ModelAdmin):
         payload = {"form": form}
          
         return render(request, "custom_admin/csv_form.html", payload)
+
+    def import_from_rest_api(self, request):
+        form = RESTApiImportForm(request.POST)
+        if form.is_valid():
+            try:
+                form.save()
+            except ValidationError as e:
+                messages.error(request, message='\n'.join(e.messages))
+                return redirect("..")
+            messages.success(request, "Data has been imported successfully!")
+            return redirect("..")
+
+        form = RESTApiImportForm()
+        payload = {"form": form}
+        return render(request, "custom_admin/rest_api_form.html", payload)
+
 
 admin.site.register(Election)
 admin.site.register(Nomination, NominationAdmin)
