@@ -1,0 +1,24 @@
+{
+  "name": "voting_dapp",
+  "version": "1.0.0",
+  "description": "IT254 Course Project - Decentralised Voting Application using Blockchain - Backend of the website",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/raosush/voting_dapp.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/raosush/voting_dapp/issues"
+  },
+  "homepage": "https://github.com/raosush/voting_dapp#readme",
+  "dependencies": {
+    "@alch/alchemy-web3": "^1.1.8",
+    "dotenv": "^10.0.0"
+  }
+}

@@ -2,6 +2,9 @@
 *$py.class
 **__pycache__/
 
+# Node #
+/node_modules
+
 # Django #
 *.log
 *.pot
