@@ -83,17 +83,25 @@ class UserAPI(generics.RetrieveAPIView):
         return self.request.user
 
 
+class FetchProfile(generics.GenericAPIView):
+    serializer_class = ProfileSerializer
+    permission_classes = []
+
+    def get(self, request, format=None):
+        user_id = request.GET.get('user_id', None)
+        if user_id == None:
+            return Response({"error": "User's profile not found!"}, status=status.HTTP_404_NOT_FOUND)
+        else:
+            user_id = int(user_id)
+        try:
+            profile = Profile.objects.get(user=user_id)
+        except Profile.DoesNotExist as e:
+            return Response({"error": e.args}, status=status.HTTP_404_NOT_FOUND)
+        return Response({"profile": ProfileSerializer(profile, context=self.get_serializer_context()).data}, status=status.HTTP_200_OK)
+
 class ProfileAPI(generics.GenericAPIView):
     serializer_class = ProfileSerializer
     permission_classes = [permissions.IsAuthenticated, IsOtpVerified, IsOwner]
-
-    def get(self, request, format=None):
-        try:
-            profile = Profile.objects.get(user=request.user)
-        except Profile.DoesNotExist as e:
-            return Response({"error": e.args}, status=status.HTTP_404_NOT_FOUND)
-        self.check_object_permissions(request, profile)
-        return Response({"profile": ProfileSerializer(profile, context=self.get_serializer_context()).data}, status=status.HTTP_200_OK)
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -104,7 +112,10 @@ class ProfileAPI(generics.GenericAPIView):
         })
 
     def put(self, request, *args, **kwargs):
-        profile = Profile.objects.get(user=request.user)
+        try:
+            profile = Profile.objects.get(user=request.user)
+        except Profile.DoesNotExist as e:
+            return Response({"error": e.args}, status=status.HTTP_404_NOT_FOUND)
         self.check_object_permissions(request, profile)
         serializer = self.get_serializer(profile, data=request.data)
         serializer.is_valid(raise_exception=True)

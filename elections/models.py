@@ -1,6 +1,8 @@
 from django.conf import settings
 from django.db import models
 
+from elections.validators import validate_campaign_time, validate_candidate_nomination
+
 # Create your models here.
 
 class Election(models.Model):
@@ -28,3 +30,11 @@ class Nomination(models.Model):
 
     def __str__(self):
         return str(self.user) + " - " + str(self.election) + " - " + str(self.get_type_of_nomination_display())
+
+class Campaign(models.Model):
+    campaign = models.TextField(verbose_name='campaign_of_a_candidate', max_length=65535)
+    nomination = models.ForeignKey(Nomination, on_delete=models.CASCADE, related_name='campaigns', validators=[
+        validate_campaign_time, validate_candidate_nomination])
+
+    def __str__(self):
+        return str(self.nomination.user) + " - " + str(self.pk)

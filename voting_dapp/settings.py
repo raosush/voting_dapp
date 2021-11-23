@@ -123,6 +123,10 @@ CUSTOM_AUTH_VALUES = {
 
 OTP_TOTP_ISSUER = 'Voting_Dapp'
 
+FIXTURE_DIRS = [
+    os.path.join(BASE_DIR, "fixtures")
+]
+
 ROOT_URLCONF = 'voting_dapp.urls'
 
 TEMPLATES = [
