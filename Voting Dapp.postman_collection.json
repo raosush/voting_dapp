@@ -191,22 +191,22 @@
 			"name": "Fetch Profile",
 			"request": {
 				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer {{access_token}}",
-						"type": "text"
-					}
-				],
+				"header": [],
 				"url": {
-					"raw": "{{baseUri}}/api/auth/profile",
+					"raw": "{{baseUri}}/api/auth/fetch_profile?user_id=2",
 					"host": [
 						"{{baseUri}}"
 					],
 					"path": [
 						"api",
 						"auth",
-						"profile"
+						"fetch_profile"
+					],
+					"query": [
+						{
+							"key": "user_id",
+							"value": "2"
+						}
 					]
 				}
 			},
@@ -380,6 +380,66 @@
 						"api",
 						"elections",
 						"eligible_elections"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Campaign",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"campaign\": \"My campaign will highlight all the important manifestos I have propose in my candidature.\",\n    \"nomination_id\": \"5\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUri}}/api/elections/campaigns",
+					"host": [
+						"{{baseUri}}"
+					],
+					"path": [
+						"api",
+						"elections",
+						"campaigns"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fetch Campaigns",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUri}}/api/elections/campaigns/fetch?q=1,2",
+					"host": [
+						"{{baseUri}}"
+					],
+					"path": [
+						"api",
+						"elections",
+						"campaigns",
+						"fetch"
+					],
+					"query": [
+						{
+							"key": "q",
+							"value": "1,2"
+						}
 					]
 				}
 			},
