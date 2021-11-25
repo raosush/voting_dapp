@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 from django.urls import path
 from django.shortcuts import redirect, render
 from .forms import CsvImportForm, RESTApiImportForm
-from elections.models import Election, Nomination
+from elections.models import Campaign, Election, Nomination, Vote
 
 # Register your models here. 
   
@@ -55,3 +55,5 @@ class NominationAdmin(admin.ModelAdmin):
 
 admin.site.register(Election)
 admin.site.register(Nomination, NominationAdmin)
+admin.site.register(Campaign)
+admin.site.register(Vote)

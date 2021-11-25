@@ -1,12 +1,14 @@
 from rest_framework import generics, status
 from rest_framework.response import Response
 from authentication.models import User
-from elections.models import Campaign, Election, Nomination
+from elections.models import Campaign, Election, Nomination, Vote
 
-from elections.serializers import CampaignSerializer, ElectionSerializer, NominationSerializer
+from elections.serializers import CampaignSerializer, ElectionSerializer, NominationSerializer, VoteSerializer
 from rest_framework.permissions import IsAuthenticated
 from authentication.permissions import IsOtpVerified
 from .permissions import IsCampaignOwner
+from django.utils import timezone
+import json
 
 # Create your views here.
 
@@ -88,3 +90,25 @@ class CampaignView(generics.GenericAPIView):
         return Response({
             "campaign": CampaignSerializer(campaign, context=self.get_serializer_context()).data
         })
+
+class VoteAPI(generics.GenericAPIView):
+    def post(self, request, *args, **kwargs):
+        nomination_id = json.loads(request.body).get('nomination_id', None)
+        if nomination_id == None:
+            return Response({'error': 'Missing/Incorrect body'}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            nomination = Nomination.objects.get(pk=nomination_id, type_of_nomination=1)
+        except Nomination.DoesNotExist:
+            return Response({'error': 'This nomination does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+        election = nomination.election
+        if Vote.objects.filter(voter=request.user, election=election).exists():
+            return Response({'error': 'You are no longer eligible to vote in this election, since you have already casted your vote'}, status=status.HTTP_403_FORBIDDEN)
+        try:
+            voter = Nomination.objects.get(election=election, user=request.user, type_of_nomination=2)
+        except Nomination.DoesNotExist:
+            return Response({'error': 'You are not eligible to vote in this election'}, status=status.HTTP_403_FORBIDDEN)
+        if election.end_date < timezone.now():
+            return Response({'error': 'Voting period has ended!'}, status=status.HTTP_403_FORBIDDEN)
+        else:
+            election.cast_vote(request.user.id, nomination.user.id)
+            return Response({'success': 'Your vote was successfully casted!'}, status=status.HTTP_200_OK)
