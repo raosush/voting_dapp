@@ -425,7 +425,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{baseUri}}/api/elections/campaigns/fetch?q=1,2",
+					"raw": "{{baseUri}}/api/elections/campaigns/fetch?type=r&q=1,2",
 					"host": [
 						"{{baseUri}}"
 					],
@@ -437,9 +437,47 @@
 					],
 					"query": [
 						{
+							"key": "type",
+							"value": "r"
+						},
+						{
 							"key": "q",
 							"value": "1,2"
 						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Vote for a candidate",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"nomination_id\": \"12\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUri}}/api/elections/vote",
+					"host": [
+						"{{baseUri}}"
+					],
+					"path": [
+						"api",
+						"elections",
+						"vote"
 					]
 				}
 			},
