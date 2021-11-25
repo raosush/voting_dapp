@@ -19,6 +19,11 @@
   "homepage": "https://github.com/raosush/voting_dapp#readme",
   "dependencies": {
     "@alch/alchemy-web3": "^1.1.8",
+    "@truffle/hdwallet-provider": "^1.7.0",
     "dotenv": "^10.0.0"
+  },
+  "devDependencies": {
+    "@nomiclabs/hardhat-ethers": "^2.0.2",
+    "ethers": "^5.5.1"
   }
 }
