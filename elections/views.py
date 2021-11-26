@@ -9,6 +9,8 @@ from authentication.permissions import IsOtpVerified
 from .permissions import IsCampaignOwner
 from django.utils import timezone
 import json
+from django.core.mail import send_mail
+from django.conf import settings
 
 # Create your views here.
 
@@ -111,4 +113,6 @@ class VoteAPI(generics.GenericAPIView):
             return Response({'error': 'Voting period has ended!'}, status=status.HTTP_403_FORBIDDEN)
         else:
             election.cast_vote(request.user.id, nomination.user.id)
+            send_mail(subject='Voting Dapp - Vote casted', message='Congratulations! You have successfully casted your vote for the election - %s' %(election.position),
+            from_email=settings.EMAIL_HOST_USER, recipient_list=[request.user.email])
             return Response({'success': 'Your vote was successfully casted!'}, status=status.HTTP_200_OK)

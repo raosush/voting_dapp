@@ -6,6 +6,7 @@ from authentication.models import User
 
 from elections.validators import validate_campaign_time, validate_candidate_nomination
 import hashlib
+from django.core.mail import send_mail
 
 # Create your models here.
 
@@ -43,6 +44,8 @@ def after_adding_election(sender, instance, **kwargs):
         Vote.objects.create(data=sha_hash.hexdigest(), election=instance)
         instance.vote_count = dict()
         instance.save()
+        send_mail(subject='Voting Dapp - New election added', message='A new election has been added on our platform. Check it out now!',
+        from_email=settings.EMAIL_HOST_USER, to=[x.email for x in User.objects.filter(is_active=True, is_admin=False)])
 
 class Nomination(models.Model):
     user = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='User')
@@ -68,6 +71,11 @@ def after_adding_candidate(sender, instance, **kwargs):
         temp = instance.election
         temp.vote_count[instance.user.id.__str__()] = 0
         temp.save()
+        send_mail(subject='Voting Dapp - Nomination filed', message='Your nomination as a candidate has been filed for %s' %(temp.position),
+        from_email=settings.EMAIL_HOST_USER, recipient_list=[instance.user.email])
+    elif instance.type_of_nomination == 2 and kwargs['created']:
+        send_mail(subject='Voting Dapp - Eligible Voter', message='You are an eligible voter in the election %s' %(instance.election.position),
+        from_email=settings.EMAIL_HOST_USER, recipient_list=[instance.user.email])
 
 class Vote(models.Model):
     election = models.ForeignKey(to=Election, on_delete=models.CASCADE, verbose_name='Election')
