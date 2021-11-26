@@ -45,7 +45,7 @@ def after_adding_election(sender, instance, **kwargs):
         instance.vote_count = dict()
         instance.save()
         send_mail(subject='Voting Dapp - New election added', message='A new election has been added on our platform. Check it out now!',
-        from_email=settings.EMAIL_HOST_USER, to=[x.email for x in User.objects.filter(is_active=True, is_admin=False)])
+        from_email=settings.EMAIL_HOST_USER, recipient_list=[x.email for x in User.objects.filter(is_active=True, is_admin=False)])
 
 class Nomination(models.Model):
     user = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='User')

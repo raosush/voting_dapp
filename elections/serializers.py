@@ -19,7 +19,7 @@ class NominationSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 class CampaignSerializer(serializers.ModelSerializer):
-    nomination_id = serializers.PrimaryKeyRelatedField(queryset=Nomination.objects.all(), many=False, validators=[
+    nomination_id = serializers.PrimaryKeyRelatedField(queryset=Nomination.objects.all(), many=False, source='nomination', validators=[
         validate_campaign_time, validate_candidate_nomination])
     nomination = NominationSerializer(read_only=True)
 
