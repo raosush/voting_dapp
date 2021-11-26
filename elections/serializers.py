@@ -32,6 +32,3 @@ class CampaignSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         return super().update(instance, validated_data)
-
-class VoteSerializer(serializers.Serializer):
-    nomination_id = serializers.PrimaryKeyRelatedField(queryset=Nomination.objects.all(), many=False)

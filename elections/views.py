@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from authentication.models import User
 from elections.models import Campaign, Election, Nomination, Vote
 
-from elections.serializers import CampaignSerializer, ElectionSerializer, NominationSerializer, VoteSerializer
+from elections.serializers import CampaignSerializer, ElectionSerializer, NominationSerializer
 from rest_framework.permissions import IsAuthenticated
 from authentication.permissions import IsOtpVerified
 from .permissions import IsCampaignOwner
@@ -115,4 +115,4 @@ class VoteAPI(generics.GenericAPIView):
             election.cast_vote(request.user.id, nomination.user.id)
             send_mail(subject='Voting Dapp - Vote casted', message='Congratulations! You have successfully casted your vote for the election - %s' %(election.position),
             from_email=settings.EMAIL_HOST_USER, recipient_list=[request.user.email])
-            return Response({'success': 'Your vote was successfully casted!'}, status=status.HTTP_200_OK)
+            return Response({'success': 'Your vote was successfully casted!', 'vote_count': Election.objects.get(pk=election.id).vote_count}, status=status.HTTP_200_OK)
